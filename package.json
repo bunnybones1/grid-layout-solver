@@ -1,0 +1,34 @@
+{
+  "name": "grid-layout-solver",
+  "version": "1.0.0",
+  "description": "A tool to help decide how many rows and columns a grid should have to satisfy a total number of cells with a preferred aspect ratio.",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Tomasz Dysinski",
+    "email": "oz@bunnybones.com",
+    "url": "https://github.com/bunnybones1"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "loadandrunscripts": "^1.0.0",
+    "lodash": "^2.4.1",
+    "threejs-managed-view": "^2.1.1",
+    "threejs-rectangle-mesh": "^1.0.0"
+  },
+  "scripts": {
+    "test": "beefy test.js --live --open"
+  },
+  "keywords": [
+    "grid",
+    "cell"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bunnybones1/grid-layout-solver.git"
+  },
+  "homepage": "https://github.com/bunnybones1/grid-layout-solver",
+  "bugs": {
+    "url": "https://github.com/bunnybones1/grid-layout-solver/issues"
+  }
+}
