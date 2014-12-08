@@ -8,14 +8,14 @@ var onReady = function() {
 		stats: true,
 	});
 
-	var totalCells = 10;
+	var totalCells = 14;
 	var rectangleMeshesPoolSize = 120;
 
-	var gridLayoutSolver = new GridLayoutSolver({
-		totalCells: totalCells,
-		preferredCellAspectRatio: .33,
-		scoreWeightAspectRatio: 2,
-		ensureTotalFits: true
+	var gridLayout = new GridLayoutSolver({
+		preferredCellCount: totalCells,
+		preferredCellAspectRatio: 1,
+		scoreWeightAspectRatio: 1,
+		ensureThatPreferredCellCountFits: true
 	});
 
 	var fullRectangle = {
@@ -25,7 +25,7 @@ var onReady = function() {
 		height: window.innerHeight-20
 	};
 
-	var gridLayoutSolution = gridLayoutSolver.solve(fullRectangle);
+	gridLayout.solve(fullRectangle);
 
 	var fullRectangleMesh = new RectangleMesh();
 	fullRectangleMesh.material.color.setHSL(1, .1, .2);
@@ -50,12 +50,12 @@ var onReady = function() {
 	function placeRectangles() {
 		previousNumberOfActiveRectangles = activeRectangleMeshes.length;
 		numberOfActiveRectangles = 0;
-		var cellWidth = fullRectangle.width / gridLayoutSolution.cols;
-		var cellHeight = fullRectangle.height / gridLayoutSolution.rows;
+		var cellWidth = gridLayout.width / gridLayout.cols;
+		var cellHeight = gridLayout.height / gridLayout.rows;
 		var keepGoing = true;
-		for(var iRow = 0, iRows = gridLayoutSolution.rows; iRow < iRows; iRow++) {
+		for(var iRow = 0, iRows = gridLayout.rows; iRow < iRows; iRow++) {
 			if(!keepGoing) break;
-			for(var iCol = 0, iCols = gridLayoutSolution.cols; iCol < iCols; iCol++) {
+			for(var iCol = 0, iCols = gridLayout.cols; iCol < iCols; iCol++) {
 				var index = iRow * iCols + iCol;
 				if(index >= totalCells) {
 					keepGoing = false;
@@ -63,8 +63,8 @@ var onReady = function() {
 				}
 				var cellRectangleMesh = rectangleMeshPool[index];
 				var rect = {
-					x: fullRectangle.x + iCol * cellWidth,
-					y: fullRectangle.y + iRow * cellHeight,
+					x: gridLayout.x + iCol * cellWidth,
+					y: gridLayout.y + iRow * cellHeight,
 					width: cellWidth,
 					height: cellHeight
 				}
@@ -95,7 +95,7 @@ var onReady = function() {
 		fullRectangle.width = ((Math.cos(time) * .5 + .5) * .35 + .5) * window.innerWidth;
 		fullRectangle.height = ((Math.sin(time) * .5 + .5) * .35 + .5) * window.innerHeight;
 		fullRectangleMesh.setRect(fullRectangle);
-		gridLayoutSolution = gridLayoutSolver.solve(fullRectangle);
+		gridLayout.solve(fullRectangle);
 		placeRectangles();
 	}, 100);
 

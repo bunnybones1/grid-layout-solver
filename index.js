@@ -1,11 +1,11 @@
 var _ = require('lodash');
 function GridLayoutSolver(params) {
 	params = _.merge({
-		totalCells: 12,
-		preferredCellAspectRatio: .5,
-		scoreWeightAspectRatio: 1.05,
-		scoreWeightFill: 1,
-		ensureTotalFits: true,
+		preferredCellCount: 12,
+		preferredCellAspectRatio: 1,
+		scoreWeightAspectRatio: 1,
+		scoreWeightCellCount: 1,
+		ensureThatPreferredCellCountFits: true,
 		considerationRange: 2
 	}, params || {});
 	_.assign(this, params);
@@ -16,7 +16,7 @@ GridLayoutSolver.prototype = {
 		var aspectRatio = aspectRatioOfGrid / this.preferredCellAspectRatio;
 		var aspectRatioHalfStrength = (aspectRatio - 1) * .5 + 1;
 		//starting point
-		var ceilingedSquareRoot = Math.ceil(Math.sqrt(this.totalCells));
+		var ceilingedSquareRoot = Math.ceil(Math.sqrt(this.preferredCellCount));
 		var rows = Math.ceil(ceilingedSquareRoot * aspectRatioHalfStrength);
 		var cols = Math.ceil(ceilingedSquareRoot / aspectRatioHalfStrength);
 
@@ -28,21 +28,21 @@ GridLayoutSolver.prototype = {
 				considerations.push({
 					rows: iRows,
 					cols: iCols,
-					total: iRows * iCols
+					cellCount: iRows * iCols
 				})
 			};
 		};
 		var _this = this;
 		considerations.forEach(function(consideration) {
 			var scoreFill;
-			if(_this.totalCells > consideration.total) {
-				if(_this.ensureTotalFits) {
+			if(_this.preferredCellCount > consideration.cellCount) {
+				if(_this.ensureThatPreferredCellCountFits) {
 					scoreFill = 0;
 				} else {
-					scoreFill = consideration.total / _this.totalCells;
+					scoreFill = consideration.cellCount / _this.preferredCellCount;
 				}
 			} else {
-				scoreFill = _this.totalCells / consideration.total;
+				scoreFill = _this.preferredCellCount / consideration.cellCount;
 			}
 			var aspectRatioOfCell = (rect.height / consideration.rows) / (rect.width / consideration.cols);
 			var scoreAspectRatio;
@@ -53,7 +53,7 @@ GridLayoutSolver.prototype = {
 			}
 			// console.log(scoreAspectRatio);
 			//weights
-			scoreFill *= _this.scoreWeightFill;
+			scoreFill *= _this.scoreWeightCellCount;
 			scoreAspectRatio *= _this.scoreWeightAspectRatio;
 			//tally
 			consideration.score = scoreFill + scoreAspectRatio;
@@ -62,10 +62,8 @@ GridLayoutSolver.prototype = {
 			return b.score - a.score;
 		})
 		var best = considerations[0];
-		return {
-			rows: best.rows,
-			cols: best.cols
-		};
+		_.merge(this, rect);
+		_.merge(this, best);
 	}
 }
 module.exports = GridLayoutSolver;
