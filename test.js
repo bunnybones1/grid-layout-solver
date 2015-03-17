@@ -25,7 +25,7 @@ var onReady = function() {
 		height: window.innerHeight-20
 	};
 
-	gridLayout.solve(fullRectangle);
+	var solution = gridLayout.solve(fullRectangle);
 
 	var fullRectangleMesh = new RectangleMesh();
 	fullRectangleMesh.material.color.setHSL(1, .1, .2);
@@ -47,15 +47,15 @@ var onReady = function() {
 	var previousNumberOfActiveRectangles;
 	var numberOfActiveRectangles;
 
-	function placeRectangles() {
+	function placeRectangles(solution) {
 		previousNumberOfActiveRectangles = activeRectangleMeshes.length;
 		numberOfActiveRectangles = 0;
-		var cellWidth = gridLayout.width / gridLayout.cols;
-		var cellHeight = gridLayout.height / gridLayout.rows;
+		var cellWidth = fullRectangle.width / solution.cols;
+		var cellHeight = fullRectangle.height / solution.rows;
 		var keepGoing = true;
-		for(var iRow = 0, iRows = gridLayout.rows; iRow < iRows; iRow++) {
+		for(var iRow = 0, iRows = solution.rows; iRow < iRows; iRow++) {
 			if(!keepGoing) break;
-			for(var iCol = 0, iCols = gridLayout.cols; iCol < iCols; iCol++) {
+			for(var iCol = 0, iCols = solution.cols; iCol < iCols; iCol++) {
 				var index = iRow * iCols + iCol;
 				if(index >= totalCells) {
 					keepGoing = false;
@@ -63,8 +63,8 @@ var onReady = function() {
 				}
 				var cellRectangleMesh = rectangleMeshPool[index];
 				var rect = {
-					x: gridLayout.x + iCol * cellWidth,
-					y: gridLayout.y + iRow * cellHeight,
+					x: fullRectangle.x + iCol * cellWidth,
+					y: fullRectangle.y + iRow * cellHeight,
 					width: cellWidth,
 					height: cellHeight
 				}
@@ -88,16 +88,25 @@ var onReady = function() {
 			}
 		}
 	}
-	placeRectangles();
+	placeRectangles(solution);
 
 	setInterval(function() {
 		var time = (new Date()).getTime() * .001;
 		fullRectangle.width = ((Math.cos(time) * .5 + .5) * .35 + .5) * window.innerWidth;
 		fullRectangle.height = ((Math.sin(time) * .5 + .5) * .35 + .5) * window.innerHeight;
 		fullRectangleMesh.setRect(fullRectangle);
-		gridLayout.solve(fullRectangle);
-		placeRectangles();
+		solution = gridLayout.solve(fullRectangle);
+		placeRectangles(solution);
 	}, 100);
+
+	setTimeout(function() {
+		gridLayout.setPreferredCellCount(6);
+		// gridLayout.setPreferredCellAspectRatio(.25);
+		// gridLayout.setScoreWeightAspectRatio();
+		// gridLayout.setScoreWeightCellCount();
+		// gridLayout.setFitAll();
+		// gridLayout.setConsiderationRange();
+	}, 3000);
 
 }
 
