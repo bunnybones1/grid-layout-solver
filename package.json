@@ -1,6 +1,6 @@
 {
   "name": "grid-layout-solver",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A tool to help decide how many rows and columns a grid should have to satisfy a total number of cells with a preferred aspect ratio.",
   "main": "index.js",
   "license": "MIT",
