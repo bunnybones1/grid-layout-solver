@@ -3,13 +3,15 @@ function GridLayoutSolver(params) {
 	var _preferredCellAspectRatio = params.preferredCellAspectRatio || 1;
 	var _scoreWeightAspectRatio = params.scoreWeightAspectRatio || 1;
 	var _scoreWeightCellCount = params.scoreWeightCellCount || 1;
+	var _marginX = params.marginX || 0.0;
+	var _marginY = params.marginY || 0.0;
 	var _fitAll = params.fitAll || true;
 	var _considerationRange = params.considerationRange || 2;
 
 	function _solve(rect) {
 		var aspectRatioOfGrid = rect.height / rect.width;
 		var aspectRatio = aspectRatioOfGrid / _preferredCellAspectRatio;
-		var aspectRatioHalfStrength = (aspectRatio - 1) * .5 + 1;
+		var aspectRatioHalfStrength = (aspectRatio - 1) * 0.5 + 1;
 		//starting point
 		var ceilingedSquareRoot = Math.ceil(Math.sqrt(_preferredCellCount));
 		var rows = Math.ceil(ceilingedSquareRoot * aspectRatioHalfStrength);
@@ -59,6 +61,21 @@ function GridLayoutSolver(params) {
 		var best = considerations[0];
 		best.cellWidth = rect.width / best.cols;
 		best.cellHeight = rect.height / best.rows;
+
+		//margins
+		
+		var paddedWidth = rect.width + best.cellWidth * _marginX;
+		var ratioWidth = rect.width / paddedWidth;
+		best.cellWidth *= ratioWidth;
+		best.innerWidth = rect.width * ratioWidth;
+		best.marginWidth = rect.width - best.innerWidth;
+
+		var paddedHeight = rect.height + best.cellHeight * _marginY;
+		var ratioHeight = rect.height / paddedHeight;
+		best.cellHeight *= ratioHeight;
+		best.innerHeight = rect.height * ratioHeight;
+		best.marginHeight = rect.height - best.innerHeight;
+
 		return best;
 	}
 
@@ -77,6 +94,12 @@ function GridLayoutSolver(params) {
 	function _setFitAll(val) {
 		_fitAll = val;
 	}
+	function _setMarginX(val) {
+		_marginX = val;
+	}
+	function _setMarginY(val) {
+		_marginY = val;
+	}
 	function _setConsiderationRange(val) {
 		_considerationRange = val;
 	}
@@ -85,6 +108,8 @@ function GridLayoutSolver(params) {
 	this.setPreferredCellAspectRatio = _setPreferredCellAspectRatio;
 	this.setScoreWeightAspectRatio = _setScoreWeightAspectRatio;
 	this.setScoreWeightCellCount = _setScoreWeightCellCount;
+	this.setMarginX = _setMarginX;
+	this.setMarginY = _setMarginY;
 	this.setFitAll = _setFitAll;
 	this.setConsiderationRange = _setConsiderationRange;
 
