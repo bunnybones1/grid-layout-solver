@@ -61,21 +61,6 @@ function GridLayoutSolver(params) {
 		var best = considerations[0];
 		best.cellWidth = rect.width / best.cols;
 		best.cellHeight = rect.height / best.rows;
-
-		//margins
-		
-		var paddedWidth = rect.width + best.cellWidth * _marginX;
-		var ratioWidth = rect.width / paddedWidth;
-		best.cellWidth *= ratioWidth;
-		best.innerWidth = rect.width * ratioWidth;
-		best.marginWidth = rect.width - best.innerWidth;
-
-		var paddedHeight = rect.height + best.cellHeight * _marginY;
-		var ratioHeight = rect.height / paddedHeight;
-		best.cellHeight *= ratioHeight;
-		best.innerHeight = rect.height * ratioHeight;
-		best.marginHeight = rect.height - best.innerHeight;
-
 		return best;
 	}
 
